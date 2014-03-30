@@ -1,5 +1,5 @@
 # BQ 2048
-Mix tiles when one is divided by another
+Mix tiles when one divides another
 
 Made just for fun. [Play it here!](http://superacidxy.github.io/2048/)
 
