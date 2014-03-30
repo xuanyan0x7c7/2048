@@ -1,5 +1,9 @@
 # BQ 2048
+<<<<<<< HEAD
 Mix tiles when one divides another
+=======
+Mix tiles when one divides another.
+>>>>>>> master
 
 Made just for fun. [Play it here!](http://superacidxy.github.io/2048/)
 
