@@ -71,13 +71,13 @@ GameManager.prototype.addStartTiles = function () {
 
 // Adds a tile in a random position
 GameManager.prototype.addRandomTile = function () {
-  var prime = [2, 3, 5, 7, 11, 13, 17, 19];
+  var prime = [2, 3, 5, 7, 11, 13, -1, -2];
+  var probability = [0.2, 0.35, 0.5, 0.6, 0.7, 0.8, 0.9, 1.01];
   if (this.grid.cellsAvailable()) {
     var rand = Math.random();
-    var value = prime[4];
-    for (var i = 0; i < 4; ++i) {
-      rand *= 2;
-      if (rand > 1.0) {
+    var value = 0;
+    for (var i = 0; i < prime.length; ++i) {
+      if (rand < probability[i]) {
         value = prime[i];
         break;
       }
@@ -166,8 +166,24 @@ GameManager.prototype.move = function (direction) {
         var next      = self.grid.cellContent(positions.next);
 
         // Only one merger per row traversal?
-        if (next && !next.mergedFrom && (next.value % tile.value == 0 || tile.value % next.value == 0)) {
-          var merged = new Tile(positions.next, next.value + tile.value);
+        var merged = null;
+        if (next && !next.mergedFrom) {
+          if (next.value > 0 && tile.value > 0) {
+            if (next.value % tile.value == 0 || tile.value % next.value == 0) {
+              merged = new Tile(positions.next, next.value + tile.value);
+            }
+          } else if (next.value == -1 && tile.value > 0) {
+            merged = new Tile(positions.next, phi(tile.value));
+          } else if (next.value == -2 && tile.value > 0) {
+            merged = new Tile(positions.next, sigma(tile.value));
+          } else if (tile.value == -1 && next.value > 0) {
+            merged = new Tile(positions.next, phi(next.value));
+          } else if (tile.value == -2 && next.value > 0) {
+            merged = new Tile(positions.next, sigma(next.value));
+          }
+        }
+
+        if (merged) {
           merged.mergedFrom = [tile, next];
 
           self.grid.insertTile(merged);
@@ -269,7 +285,8 @@ GameManager.prototype.tileMatchesAvailable = function () {
 
           var other  = self.grid.cellContent(cell);
 
-          if (other && (other.value % tile.value == 0 || tile.value % other.value == 0)) {
+          if (other && ((other.value < 0 ^ tile.value < 0) ||
+                  ((other.value > 0 && tile.value > 0 && (other.value % tile.value == 0 || tile.value % other.value == 0))))) {
             return true; // These two tiles can be merged
           }
         }
