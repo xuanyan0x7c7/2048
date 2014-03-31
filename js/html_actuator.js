@@ -72,7 +72,13 @@ HTMLActuator.prototype.addTile = function (tile) {
   this.applyClasses(wrapper, classes);
 
   inner.classList.add("tile-inner");
-  inner.textContent = tile.value;
+  if (tile.value == -1) {
+    inner.innerHTML = "&phi;";
+  } else if (tile.value == -2) {
+    inner.innerHTML = "&sigma;";
+  } else {
+    inner.textContent = tile.value;
+  }
 
   if (tile.previousPosition) {
     // Make sure that the tile gets rendered in the previous position first
@@ -86,6 +92,7 @@ HTMLActuator.prototype.addTile = function (tile) {
 
     // Render the tiles that merged
     tile.mergedFrom.forEach(function (merged) {
+      merged['merge-0'] = merged['merge-1'] = merged['merge-2'] = merged['merge-3'] = false;
       self.addTile(merged);
     });
   } else {
