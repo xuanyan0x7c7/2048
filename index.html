@@ -108,11 +108,12 @@
     ga("send", "pageview");
 	var time = new Date();
     if (time.getMonth() == 3 && time.getDate() == 1) {
-      document.body.style.transform = "rotate(180deg)";
-      document.body.style.mozTransform = "rotate(180deg)";
-      document.body.style.msTransform = "rotate(180deg)";
-      document.body.style.oTransform = "rotate(180deg)";
-      document.body.style.webkitTransform = "rotate(180deg)";
+      var obj = Math.random() > 0.5 ? document.body : document.querySelector(".game-container");
+      obj.style.transform = "rotate(180deg)";
+      obj.style.mozTransform = "rotate(180deg)";
+      obj.style.msTransform = "rotate(180deg)";
+      obj.style.oTransform = "rotate(180deg)";
+      obj.style.webkitTransform = "rotate(180deg)";
     }
   </script>
 </body>
