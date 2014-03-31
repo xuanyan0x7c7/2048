@@ -57,9 +57,10 @@ HTMLActuator.prototype.addTile = function (tile) {
   var inner     = document.createElement("div");
   var position  = tile.previousPosition || { x: tile.x, y: tile.y };
   var positionClass = this.positionClass(position);
+  var arrowClass = this.arrowClass(tile);
 
   // We can't use classlist because it somehow glitches when replacing classes
-  var classes = ["tile", "tile-" + tile.value, positionClass];
+  var classes = ["tile", "tile-" + tile.value, positionClass, arrowClass];
   for (var i = 2; i <= 2048; i *= 2) {
     if (tile.value >= i) {
       classes[1] = "tile-" + i;
@@ -110,6 +111,23 @@ HTMLActuator.prototype.normalizePosition = function (position) {
 HTMLActuator.prototype.positionClass = function (position) {
   position = this.normalizePosition(position);
   return "tile-position-" + position.x + "-" + position.y;
+};
+
+HTMLActuator.prototype.arrowClass = function (tile) {
+  var classes = [];
+  var map = {
+    0: 'up',
+    1: 'right',
+    2: 'down',
+    3: 'left'
+  };
+
+  for (var direction = 0; direction < 4; direction++) {
+    if (tile['merge-' + direction] === true) {
+      classes.push('arrow-' + map[direction]);
+    };
+  }
+  return classes.join(' ');
 };
 
 HTMLActuator.prototype.updateScore = function (score) {
