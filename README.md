@@ -1,4 +1,4 @@
-# BQ 2048
+# Arithmetic 2048
 Merge tiles when one divides another.
 
 Made just for fun. [Play it here!](http://superacidxy.github.io/2048/)
