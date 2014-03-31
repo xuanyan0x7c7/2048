@@ -71,15 +71,16 @@ GameManager.prototype.addStartTiles = function () {
 
 // Adds a tile in a random position
 GameManager.prototype.addRandomTile = function () {
+  var prime = [2, 3, 5, 7, 11, 13, 17, 19];
   if (this.grid.cellsAvailable()) {
     var rand = Math.random();
-    var value;
-    if (rand < 0.5) {
-      value = 2;
-    } else if (rand < 0.8) {
-      value = 3;
-    } else {
-      value = 5;
+    var value = prime[4];
+    for (var i = 0; i < 4; ++i) {
+      rand *= 2;
+      if (rand > 1.0) {
+        value = prime[i];
+        break;
+      }
     }
     var tile = new Tile(this.grid.randomAvailableCell(), value);
 
