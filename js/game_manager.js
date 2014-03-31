@@ -57,6 +57,7 @@ GameManager.prototype.setup = function () {
     // Add the initial tiles
     this.addStartTiles();
   }
+  this.checkTileMergeAvailable();
 
   // Update the actuator
   this.actuate();
@@ -210,6 +211,7 @@ GameManager.prototype.move = function (direction) {
 
   if (moved) {
     this.addRandomTile();
+    this.checkTileMergeAvailable();
 
     if (!this.movesAvailable()) {
       this.over = true; // Game over!
@@ -295,6 +297,36 @@ GameManager.prototype.tileMatchesAvailable = function () {
   }
 
   return false;
+};
+
+// Check for available merges between tiles (expensive check)
+GameManager.prototype.checkTileMergeAvailable = function () {
+  var self = this;
+
+  var tile, other, vector, cell;
+
+  for (var x = 0; x < this.size; x++) {
+    for (var y = 0; y < this.size; y++) {
+      tile = this.grid.cellContent({ x: x, y: y });
+      if (tile) {
+        for (var direction = 0; direction < 4; direction++) {
+          tile['merge-' + direction] = false;
+          vector = self.getVector(direction);
+          cell = { x: x, y: y };
+          other = null;
+          while (!other && self.grid.withinBounds(cell)) {
+            cell = { x: cell.x + vector.x, y: cell.y + vector.y };
+            other  = self.grid.cellContent(cell);
+          }
+
+          if (other && ((other.value < 0 ^ tile.value < 0) ||
+                  ((other.value > 0 && tile.value > 0 && (other.value % tile.value == 0 || tile.value % other.value == 0))))) {
+            tile['merge-' + direction] = true;
+          }
+        }
+      }
+    }
+  }
 };
 
 GameManager.prototype.positionsEqual = function (first, second) {
